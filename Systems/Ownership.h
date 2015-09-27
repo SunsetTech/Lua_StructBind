@@ -27,8 +27,8 @@ bool StructBind_Is_Owner(lua_State* L, int OwnerIndex, int ChildIndex) {
 		return false;
 	}
 	StructBind_Push_RegistryKey(L,OwnershipMapKey);
-	M_GetTable(lua_pushvalue(L,ChildIndex-1))
-	int IsOwner = lua_compare(L,-1,OwnerIndex-3,LUA_OPEQ);
+	M_GetTable(lua_pushvalue(L,M_Stack_Index(ChildIndex,1)))
+	int IsOwner = lua_compare(L,-1,M_Stack_Index(OwnerIndex,2),LUA_OPEQ);
 	lua_pop(L,2);
 	return IsOwner;
 }
@@ -40,8 +40,8 @@ void StructBind_Take_Ownership(lua_State* L, int OwnerIndex, int ChildIndex) {
 	assert(!Child_Info->IsOwned);
 	StructBind_Push_RegistryKey(L,OwnershipMapKey);
 	M_SetTable(
-		lua_pushvalue(L,ChildIndex-2),
-		lua_pushvalue(L,OwnerIndex-3)
+		lua_pushvalue(L,M_Stack_Index(ChildIndex,1)),
+		lua_pushvalue(L,M_Stack_Index(OwnerIndex,2))
 	)
 	lua_pop(L,1);
 	Child_Info->IsOwned = true;
@@ -54,7 +54,7 @@ void StructBind_Release_Ownership(lua_State* L, int OwnerIndex, int ChildIndex) 
 	assert(StructBind_Is_Owner(L,OwnerIndex,ChildIndex));
 	StructBind_Push_RegistryKey(L,OwnershipMapKey);
 	M_SetTable(
-		lua_pushvalue(L,ChildIndex-2),
+		lua_pushvalue(L,M_Stack_Index(ChildIndex,1)),
 		lua_pushnil(L)
 	)
 	lua_pop(L,1);

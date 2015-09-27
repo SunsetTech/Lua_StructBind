@@ -18,7 +18,7 @@ void StructBind_Map_Userdata(lua_State* L, void* Address, int ValueIndex) {
 	StructBind_Push_RegistryKey(L,UserdataMapKey);
 	M_SetTable(
 		lua_pushlightuserdata(L,Address),
-		lua_pushvalue(L,ValueIndex-2)
+		lua_pushvalue(L,M_Stack_Index(ValueIndex,2))
 	)
 	lua_pop(L,1);
 }

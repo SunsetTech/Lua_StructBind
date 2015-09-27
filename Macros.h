@@ -19,10 +19,13 @@
 	lua_gettable(L,-2);
 
 #define M_Userdata_Metamethod_GetInfo()\
-	StructBind_Userdata_Info* Info_Address = lua_touserdata(L,1);
+	StructBind_Userdata_Info* Info_Address = StructBind_Userdata_GetInfo(lua_touserdata(L,1));
+#define M_Userdata_Metamethod_GetSettings()\
+	M_Userdata_Metamethod_GetInfo()\
+	StructBind_Userdata_Settings* Settings_Address = StructBind_Userdata_GetSettings(Info_Address);
 
 #define M_Userdata_Metamethod_GetStruct(P_Type) \
-	M_Userdata_Metamethod_GetInfo()\
+	M_Userdata_Metamethod_GetSettings()\
 	P_Type* Struct_Address = Info_Address->Address;\
 
 #define M_Userdata_Metamethod_Index_GetArgs(P_Type) \
@@ -47,3 +50,5 @@
 	}\
 
 #define M_IsKey(P_Key) (strcmp(Key,P_Key))
+
+#define M_Stack_Index(P_Index,P_Offset) (P_Index > 0 ? P_Index : P_Index -1)
