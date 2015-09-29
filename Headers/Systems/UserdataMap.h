@@ -4,35 +4,40 @@
 */
 
 #pragma once
+#include "../Types.h"
 #include "../Registry.h"
 
-const char* UserdataMapKey = "UserdataMap";
+static const char* UserdataMapKey = "UserdataMap";
 
-void StructBind_Init_UserdataMap(lua_State* L) {
+static void StructBind_Init_UserdataMap(lua_State* L) {
+	M_Print("Initializing Userdata map");
 	StructBind_Init_RegistryKey(L,UserdataMapKey);
 	StructBind_Set_Mode(L,"v");
 	lua_pop(L,1);
 }
 
-void StructBind_Map_Userdata(lua_State* L, void* Address, int ValueIndex) {
+static void StructBind_Map_Userdata(lua_State* L, void* Address, int Index) {
+	M_To_Absolute(Index)
 	StructBind_Push_RegistryKey(L,UserdataMapKey);
 	M_SetTable(
 		lua_pushlightuserdata(L,Address),
-		lua_pushvalue(L,M_Stack_Index(ValueIndex,2))
+		lua_pushvalue(L,Index)
 	)
 	lua_pop(L,1);
+	M_Print("Mapping pointer %p to userdata %p",Address,lua_touserdata(L,Index));
 }
 
-void StructBind_Unmap_Userdata(lua_State* L, void* Address) {
+static void StructBind_Unmap_Userdata(lua_State* L, void* Address) {
 	StructBind_Push_RegistryKey(L,UserdataMapKey);
 	M_SetTable(
 		lua_pushlightuserdata(L,Address),
 		lua_pushnil(L)
 	)
 	lua_pop(L,1);
+	M_Print("Unmapping pointer %p", Address);
 }
 
-void StructBind_Lookup_Userdata(lua_State* L, void* Address) {
+static void StructBind_Lookup_Userdata(lua_State* L, void* Address) {
 	StructBind_Push_RegistryKey(L,UserdataMapKey);
 	M_GetTable(lua_pushlightuserdata(L,Address))
 	lua_remove(L,-2);

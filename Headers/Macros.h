@@ -2,6 +2,17 @@
 #include "string.h"
 #define M_Namespace StructBind
 
+#define M_V_Module
+
+#ifdef D_StructBind_Verbose
+	#define M_Print(P_Format,...) printf(P_Format "\n", ##__VA_ARGS__);
+#else
+	#define M_Print(P_Format,...)
+#endif
+
+#define M_Method(P_MethodName)\
+	M_V_Module##_##P_MethodName
+
 #define M_SetField(P_ValueExpression,P_Key)\
 	P_ValueExpression;\
 	lua_setfield(L,-2,P_Key);
@@ -18,18 +29,11 @@
 	P_KeyExpression; \
 	lua_gettable(L,-2);
 
-#define M_Userdata_Metamethod_GetInfo()\
-	StructBind_Userdata_Info* Info_Address = StructBind_Userdata_GetInfo(lua_touserdata(L,1));
-#define M_Userdata_Metamethod_GetSettings()\
-	M_Userdata_Metamethod_GetInfo()\
-	StructBind_Userdata_Settings* Settings_Address = StructBind_Userdata_GetSettings(Info_Address);
+#define M_Userdata_Metamethod_GetUserdata()\
+	StructBind_Userdata* Userdata = lua_touserdata(L,1);
 
-#define M_Userdata_Metamethod_GetStruct(P_Type) \
-	M_Userdata_Metamethod_GetSettings()\
-	P_Type* Struct_Address = Info_Address->Address;\
-
-#define M_Userdata_Metamethod_Index_GetArgs(P_Type) \
-	M_Userdata_Metamethod_GetStruct(P_Type)\
+#define M_Userdata_Metamethod_Index_GetArgs() \
+	M_Userdata_Metamethod_GetUserdata()\
 	const char* Key = lua_tostring(L,2);
 
 #define M_If_Not_Wrapped(P_Address_Expression,P_Body)\
@@ -49,6 +53,14 @@
 		P_Body\
 	}\
 
-#define M_IsKey(P_Key) (strcmp(Key,P_Key))
+#define M_IsKey(P_Key) (strcmp(Key,P_Key) == 0)
 
 #define M_Stack_Index(P_Index,P_Offset) (P_Index > 0 ? P_Index : P_Index -1)
+#define M_Iterate_Table(P_Index,P_Body)\
+	lua_pushnil(L);\
+	while (lua_next(L,P_Index) != 0) {\
+		P_Body\
+		lua_pop(L,1);\
+	}
+
+#define M_To_Absolute(P_Variable) P_Variable = lua_absindex(L,P_Variable);
