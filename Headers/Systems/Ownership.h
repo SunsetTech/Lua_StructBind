@@ -32,7 +32,7 @@ static void StructBind_Get_Owner(lua_State* L, int Index) {
 
 static bool StructBind_Is_Owner(lua_State* L, int OwnerIndex, int ChildIndex) {
 	M_To_Absolute(OwnerIndex) M_To_Absolute(ChildIndex)
-	StructBind_Userdata* Child = lua_touserdata(L,ChildIndex);
+	StructBind_Userdata* Child = (StructBind_Userdata*) lua_touserdata(L,ChildIndex);
 	if (!Child->Settings.IsOwnable) {
 		return false;
 	}
@@ -45,7 +45,7 @@ static bool StructBind_Is_Owner(lua_State* L, int OwnerIndex, int ChildIndex) {
 static void StructBind_Take_Ownership(lua_State* L, int OwnerIndex, int ChildIndex) {
 	M_Print("Giving ownership over %p to %p",lua_touserdata(L,ChildIndex),lua_touserdata(L,OwnerIndex))
 	M_To_Absolute(OwnerIndex) M_To_Absolute(ChildIndex)
-	StructBind_Userdata* Child = lua_touserdata(L,ChildIndex);
+	StructBind_Userdata* Child = (StructBind_Userdata*) lua_touserdata(L,ChildIndex);
 	if (Child->Info.IsNative) luaL_error(L,"Cannot take ownership over native object %p",Child);
 	if (!Child->Settings.IsOwnable) luaL_error(L,"%p is not ownable",Child);
 	if (Child->Info.IsOwned) luaL_error(L,"%p is already owned",Child);
@@ -61,7 +61,7 @@ static void StructBind_Take_Ownership(lua_State* L, int OwnerIndex, int ChildInd
 static void StructBind_Release_Ownership(lua_State* L, int OwnerIndex, int ChildIndex) {
 	M_Print("Releasing ownership of %p over %p",lua_touserdata(L,ChildIndex),lua_touserdata(L,OwnerIndex));
 	M_To_Absolute(OwnerIndex) M_To_Absolute(ChildIndex)
-	StructBind_Userdata* Child = lua_touserdata(L,ChildIndex);
+	StructBind_Userdata* Child = (StructBind_Userdata*) lua_touserdata(L,ChildIndex);
 	if (!Child->Info.IsOwned) luaL_error(L,"%p is not owned",Child);
 	if (!StructBind_Is_Owner(L,OwnerIndex,ChildIndex)) luaL_error(L,"%p does not own %p",lua_touserdata(L,OwnerIndex),Child);
 	StructBind_Push_RegistryKey(L,OwnershipMapKey);

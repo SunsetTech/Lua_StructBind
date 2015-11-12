@@ -3,9 +3,6 @@
 #define D_StructBind_Verbose
 #include "../Headers/StructBind.h"
 
-#define M_Def_Lua(P_Name) int Lua_##P_Name(lua_State* L)
-#define M_Push_Function(P_Name) lua_pushcfunction(L,Lua_##P_Name)
-
 M_Def_Lua(StructBind_IsConst) {
 	StructBind_Userdata* Userdata = lua_touserdata(L,1);
 	lua_pushboolean(L,Userdata->Settings.IsConst);

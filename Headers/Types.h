@@ -29,8 +29,6 @@ struct StructBind_Userdata {
 };
 
 typedef void (*StructBind_Allocator)(lua_State*,StructBind_Userdata*);
-typedef void (*StructBind_Constructor)(lua_State*,void*);
-typedef void (*StructBind_Copy_Constructor)(lua_State*,void*,void*);
 
 static void* StructBind_Userdata_GetDataRegion(StructBind_Userdata* Address) {
 	return (void*)(Address + 1);

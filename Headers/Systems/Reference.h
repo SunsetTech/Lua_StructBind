@@ -49,7 +49,7 @@ static void StructBind_Retrieve_ReferenceTable(lua_State* L, int ReferencerIndex
 static void StructBind_Add_Reference(lua_State* L, int ReferencerIndex, int ID, int ReferenceIndex) {
 	M_To_Absolute(ReferencerIndex);
 	M_To_Absolute(ReferenceIndex);
-	StructBind_Userdata* Reference = lua_touserdata(L,ReferenceIndex);
+	StructBind_Userdata* Reference = (StructBind_Userdata*) lua_touserdata(L,ReferenceIndex);
 	if (!Reference->Settings.IsReferenceable) {
 		luaL_error(L,"Cannot reference %p",Reference);
 	}
