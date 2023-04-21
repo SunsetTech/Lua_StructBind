@@ -3,6 +3,13 @@
 #include <LuaMacros/Macros.h>
 #include "Types.h"
 
+//courtesy gpt-3.5
+#ifdef ASS // Lua 5.2 or higher
+	#define MY_ABSINDEX(L, idx) ((idx) > 0 || (idx) <= LUA_REGISTRYINDEX ? (idx) : lua_gettop(L) + (idx) + 1)
+#else // Lua 5.1
+	#define MY_ABSINDEX(L, idx) lua_absindex(L, idx)
+#endif
+
 #ifdef D_StructBind_Verbose
 	#define M_Print(P_Format,...) printf(P_Format "\n", ##__VA_ARGS__);
 #else
@@ -50,4 +57,4 @@
 		lua_pop(L,1);\
 	}
 
-#define M_To_Absolute(P_Variable) P_Variable = lua_absindex(L,P_Variable);
+#define M_To_Absolute(P_Variable) P_Variable = MY_ABSINDEX(L,P_Variable);

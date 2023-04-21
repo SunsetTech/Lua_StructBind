@@ -1,1 +1,5 @@
 *.pyc
+lua-compat-5.3/
+*.so
+*.o
+.clangd

@@ -1,3 +1,4 @@
+#include <lua-compat-5.3/compat-5.3.h>
 #include "lua.h"
 #include "lauxlib.h"
 #define D_StructBind_Verbose
@@ -34,7 +35,7 @@ M_Def_Lua(StructBind_GetOwner) {
 
 M_Def_Lua(StructBind_GetReferences) {
 	lua_newtable(L);
-	int Index = lua_absindex(L,-1);
+	int Index = MY_ABSINDEX(L,-1);
 	StructBind_Retrieve_ReferenceTable(L,1);
 	M_Iterate_Table(
 		-1,
@@ -48,7 +49,7 @@ M_Def_Lua(StructBind_GetReferences) {
 	return 1;
 }
 
-M_Def_Lua(StructBind_Copy) {
+M_Def_Lua(StructBind_Copy_) {
 	StructBind_Utils_Copy(L,1);
 	return 0;
 }
@@ -56,12 +57,12 @@ M_Def_Lua(StructBind_Copy) {
 int luaopen_StructBind(lua_State* L) {
 	StructBind_Init(L);
 	lua_newtable(L);
-		M_SetField(M_Push_Function(StructBind_IsConst),"IsConst");
-		M_SetField(M_Push_Function(StructBind_SetConst),"SetConst");
-		M_SetField(M_Push_Function(StructBind_IsNative),"IsNative");
-		M_SetField(M_Push_Function(StructBind_IsOwned),"IsOwned");
-		M_SetField(M_Push_Function(StructBind_GetOwner),"GetOwner");
-		M_SetField(M_Push_Function(StructBind_GetReferences),"GetReferences");
-		M_SetField(M_Push_Function(StructBind_Copy),"Copy");
+		M_SetField(M_Export_Lua(StructBind_IsConst),"IsConst");
+		M_SetField(M_Export_Lua(StructBind_SetConst),"SetConst");
+		M_SetField(M_Export_Lua(StructBind_IsNative),"IsNative");
+		M_SetField(M_Export_Lua(StructBind_IsOwned),"IsOwned");
+		M_SetField(M_Export_Lua(StructBind_GetOwner),"GetOwner");
+		M_SetField(M_Export_Lua(StructBind_GetReferences),"GetReferences");
+		M_SetField(M_Export_Lua(StructBind_Copy_),"Copy");
 	return 1;
 }
